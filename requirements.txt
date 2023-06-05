@@ -1,0 +1,9 @@
+google-api-core
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+google-pasta
+googleapis-common-protos
+flask
+flask_cors

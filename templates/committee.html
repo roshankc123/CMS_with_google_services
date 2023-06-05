@@ -1,0 +1,29 @@
+<!-- this page shows the list of committee (past and present) --> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>committee list</title>
+</head>
+<body>
+    <table border="1px solid red" style="padding: auto;">
+        <tr>
+            <td>committee number</td>
+            <td>formlink</td>
+            <td>actions</td>
+        </tr>
+        {% for _key in data.keys() %}
+            <tr>
+                <td>{{_key}}</td>
+                <td>{{data[_key]}}</td>
+                <td>
+                    <a href="/delete/committee/{{_key}}">delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

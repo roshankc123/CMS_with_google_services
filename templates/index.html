@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>robotics club wrc</title>
+</head>
+<body>
+    <h3>replicate a form:</h3>
+    <form action="/create" target="_blank" method="get">
+        <select name="type" id="">
+            <h3>replicate forms:</h3>
+            {% for temp in forms.keys() %}
+                <option value="{{temp}}">{{temp}}</option>
+            {% endfor %}
+            <option value="committee">create new committee form</option>
+        </select>
+        <input type="submit" value="submit">
+    </form>
+
+    <h2>or go to the :</h2>
+        <ul><a href="/goto/committee" target="_blank"> add committee member</a></ul>
+        <ul><a href="/goto/achievement" target="_blank">add achievement</a></ul>
+        <ul><a href="/goto/event" target="_blank">add event</a></ul>
+        <ul><a href="/goto/committeelist" target="_blank">list of committee</a></ul>
+</body>
+</html>
