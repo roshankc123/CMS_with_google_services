@@ -20,6 +20,10 @@ make neccessary folders in drive
 3. get a folder id, click on copy folder-sharing link, there you can find a folder id
 4. implement a folder id in code
 
+find out more on: 
+1. https://docs.google.com/document/d/1An5IxVYPGuZ3EnQVkvWWrwB_2N1DP-ZkxBRla-6vS9k/edit?usp=sharing
+2. https://docs.google.com/document/d/15kduoQwEFnPjY2m9nJ5oX9FrJniCWXIdCeYNNzaVBFw/edit?usp=sharing
+
 
 Directory structure:
     –/mysite/
