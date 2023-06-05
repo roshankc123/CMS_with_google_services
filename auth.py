@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 from flask import session
 import pathlib
 
-
+# main function to get authentication from service api
 def get_service(api_name, api_version, scopes=['https://www.googleapis.com/auth/drive'], key_file_location=''):
     """Get a service that communicates to a Google API.
 

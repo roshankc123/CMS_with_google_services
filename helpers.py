@@ -1,4 +1,6 @@
 # helper script contain all scripts or functions for running this app
+#use a mapper to extract relevant data then compile the data and send
+#lot of code here isn't changed so that one can understand it with use cases
 
 from auth import get_service
 from auth import _path as path
@@ -187,19 +189,12 @@ def _path():
 # retrieve sheet data by sheet id
 def retrieve_sheets_data(sheetId, formType = 'committee'):
     service = get_service(api_name='sheets',api_version='v4',)
-    if formType == 'achievements':
-        tempResult = []
-        ranges = 'r2c1:r1000c15'
-    elif formType == 'committee':
+    if formType == 'committee':
         tempResult = {}
-        ranges = 'r2c4:r100c15'
-    elif formType == 'events':
-        tempResult = []
-        ranges = 'r2c2:r1000c15'
+        ranges = 'r2c1:r100c15'  #specify the fields range
     response = service.spreadsheets().values().batchGet(
             spreadsheetId=sheetId, ranges=ranges, majorDimension='ROWS').execute()
 
-    responseMapper = formMapper(formType)
     
     result = {}
 
@@ -207,28 +202,6 @@ def retrieve_sheets_data(sheetId, formType = 'committee'):
         if 'values' not in temp:
             return {}
 
-        for temp1 in temp['values']:
-            indivisual = {}
-
-            for i in range(0, len(responseMapper)):
-
-                # if temp1[i]:
-                if responseMapper[i] == 'image':
-                    if(formType == 'committee'): #create low resolution or high resolution image link as per need
-                        temp_img = convert_link_to_public_thumbnail(temp1[i])
-                    else:
-                        temp_img = create_image_url(temp1[i])
-
-                    indivisual[responseMapper[i]] = [temp_img]
-                else:
-                    indivisual[responseMapper[i]] = [temp1[i]]
-
-            if(formType == 'committee'):
-                if tempResult.get(indivisual['position'][0]):
-                    tempResult[indivisual['position'][0]].append(indivisual)
-                else:
-                    tempResult[indivisual['position'][0]] = [indivisual]
-            else:
-                tempResult.insert(0, indivisual)
-    result['data'] = tempResult
+    result['data'] = temp
     return result
+
