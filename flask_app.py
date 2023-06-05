@@ -8,6 +8,7 @@ import time
 import auth
 import consts
 import json
+import youtube
 
 
 
@@ -31,6 +32,10 @@ def form_data():
 def sheet_data():
     sheetId = 'sheets id here'
     return helpers.retrieve_sheets_data(sheetId, formType='events'), 200, {'Content-Type': 'application/json; charset=utf-8'}
+
+@app.route('/youtubeg', methods=['GET'])  #return data of youtube
+def youtubeg():
+    return flask.render_template('youtube.html', data=youtube.fetch_playlist('PLbpi6ZahtOH6G_A4_RLzzqdVf4TG5ilzf'))
 
 
 if __name__ == '__main__':

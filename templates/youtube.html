@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>youtube api</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        {% for temp in data %}
+                <img src="{{temp['thumbnail']}}" alt="">
+                <p>{{temp['title']}}<br>{{temp['url']}}</p>
+        {% endfor %}
+    </div>
+    <button onclick="loadMore('{{data[\'nextPageToken\']}}')">load more</button>
+</body>
+<script type="text/babel">
+
+    function loadMore(nextPageToken) {
+
+        const [data, setdata] = React.useState([]);
+
+        React.useEffect(() => {
+            fetch('https://kcroshan566.pythonanywhere.com/projects')
+            // fetch('http://127.0.0.1:8000/projects')
+                .then(
+                        response => response.json()
+                    )
+                    .then(
+                        responseData => {
+                            let temp = Object.values(responseData)
+                            setdata(temp)
+                        }
+                    )
+        }, []);
+        // console.log(data)
+        return (
+            <>
+            {data.map(eachData=><Card key={eachData.id} data={eachData}/>)}
+            </>
+        )
+        }
+
+        const container = document.getElementById('projects-main');
+        const root = ReactDOM.createRoot(container);
+        root.render(<Welcome />)
+</script>
+</html>
