@@ -10,43 +10,88 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <div id="content">
-        {% for temp in data %}
-                <img src="{{temp['thumbnail']}}" alt="">
-                <p>{{temp['title']}}<br>{{temp['url']}}</p>
-        {% endfor %}
-    </div>
-    <button onclick="loadMore('{{data[\'nextPageToken\']}}')">load more</button>
+    <div id="content"></div>
+    <button onclick="renderMore()" id="btn">load more</button>
+    
 </body>
 <script type="text/babel">
-
-    function loadMore(nextPageToken) {
-
+    const container = document.getElementById('content');
+    const root = ReactDOM.createRoot(container);
+    var nextToken;
+    function LoadInit(){
         const [data, setdata] = React.useState([]);
-
+        // const [nextPageToken, setnextPageToken] = React.useState('');
         React.useEffect(() => {
-            fetch('https://kcroshan566.pythonanywhere.com/projects')
+            fetch('/youtube_data/list')
             // fetch('http://127.0.0.1:8000/projects')
                 .then(
                         response => response.json()
                     )
                     .then(
                         responseData => {
+                            let tempNext = responseData.pop()
+                            nextToken = tempNext['nextToken']
+                            let temp = Object.values(responseData)
+                            setdata(temp)
+                            
+                        }
+                    )
+        }, []);
+        return <>
+            {data.map(eachData=><Card key={eachData.id} data={eachData}/>)}
+        </>
+    }
+    function Card(props){
+        // console.log(props)
+        // <iframe src={props.data['player']} frameBorder="0"></iframe>
+        return <>
+            
+            <img src={props.data['thumbnail']} alt="" />
+            <p>
+                <strong>
+                    {props.data['title']}
+                </strong>
+                <br />
+                {props.data['url']}
+            </p>
+        </>
+    }
+    
+    function FetchMore() {
+        // console.log(props.dataset['key'])
+        const [data, setdata] = React.useState([]);
+        // const [nextPageToken, setnextPageToken] = React.useState('');
+        React.useEffect(() => {
+            fetch('/youtube_data/list' + nextToken)
+            // fetch('http://127.0.0.1:8000/projects')
+                .then(
+                        response => response.json()
+                    )
+                    .then(
+                        responseData => {
+                            let tempNext = responseData.pop()
+                            nextToken = tempNext['nextToken']
+                            if(nextToken == ''){
+                                document.getElementById('btn').disabled = 'disabled';
+                            }
                             let temp = Object.values(responseData)
                             setdata(temp)
                         }
                     )
         }, []);
-        // console.log(data)
-        return (
-            <>
+        return <>
             {data.map(eachData=><Card key={eachData.id} data={eachData}/>)}
-            </>
-        )
-        }
+        </>
+    }
 
-        const container = document.getElementById('projects-main');
-        const root = ReactDOM.createRoot(container);
-        root.render(<Welcome />)
+    function renderMore(){
+        let di = document.createElement('div')
+        ReactDOM.createRoot(di).render(<FetchMore />)
+        // console.log(abc)
+        container.appendChild(di)
+    }
+        
+    root.render(<LoadInit />)
+
 </script>
 </html>

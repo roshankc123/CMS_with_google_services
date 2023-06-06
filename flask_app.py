@@ -33,10 +33,17 @@ def sheet_data():
     sheetId = 'sheets id here'
     return helpers.retrieve_sheets_data(sheetId, formType='events'), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
-@app.route('/youtubeg', methods=['GET'])  #return data of youtube
+@app.route('/youtube_data', methods=['GET'])  #return data of youtube
 def youtubeg():
-    return flask.render_template('youtube.html', data=youtube.fetch_playlist('PLbpi6ZahtOH6G_A4_RLzzqdVf4TG5ilzf'))
+    return open('templates/youtube.html', 'r').read()
 
+@app.route('/youtube_data/list', methods=['GET'])  #return data of youtube
+def youtubelist():
+    return youtube.fetch_playlist('PLbpi6ZahtOH6G_A4_RLzzqdVf4TG5ilzf', )
+
+@app.route('/youtube_data/list/<token>', methods=['GET'])  #return data of youtube
+def youtubelisttoken(token):
+    return youtube.fetch_playlist('PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4', token)
 
 if __name__ == '__main__':
     app.run(port=8000)
