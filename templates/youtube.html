@@ -17,13 +17,12 @@
 <script type="text/babel">
     const container = document.getElementById('content');
     const root = ReactDOM.createRoot(container);
-    var nextToken;
-    function LoadInit(){
+    var nextToken = '';
+
+    function FetchData(){
         const [data, setdata] = React.useState([]);
-        // const [nextPageToken, setnextPageToken] = React.useState('');
         React.useEffect(() => {
-            fetch('/youtube_data/list')
-            // fetch('http://127.0.0.1:8000/projects')
+            fetch('/youtube_data/list' + nextToken)
                 .then(
                         response => response.json()
                     )
@@ -31,6 +30,11 @@
                         responseData => {
                             let tempNext = responseData.pop()
                             nextToken = tempNext['nextToken']
+                            if(nextToken == ''){
+                                let btn = document.getElementById('btn');
+                                btn.disabled = 'disabled';
+                                btn.innerHTML = 'no more video';
+                            }
                             let temp = Object.values(responseData)
                             setdata(temp)
                             
@@ -57,41 +61,13 @@
         </>
     }
     
-    function FetchMore() {
-        // console.log(props.dataset['key'])
-        const [data, setdata] = React.useState([]);
-        // const [nextPageToken, setnextPageToken] = React.useState('');
-        React.useEffect(() => {
-            fetch('/youtube_data/list' + nextToken)
-            // fetch('http://127.0.0.1:8000/projects')
-                .then(
-                        response => response.json()
-                    )
-                    .then(
-                        responseData => {
-                            let tempNext = responseData.pop()
-                            nextToken = tempNext['nextToken']
-                            if(nextToken == ''){
-                                document.getElementById('btn').disabled = 'disabled';
-                            }
-                            let temp = Object.values(responseData)
-                            setdata(temp)
-                        }
-                    )
-        }, []);
-        return <>
-            {data.map(eachData=><Card key={eachData.id} data={eachData}/>)}
-        </>
-    }
-
     function renderMore(){
-        let di = document.createElement('div')
-        ReactDOM.createRoot(di).render(<FetchMore />)
-        // console.log(abc)
+        let di = document.createElement('span')
+        ReactDOM.createRoot(di).render(<FetchData />)
         container.appendChild(di)
     }
         
-    root.render(<LoadInit />)
+    root.render(<FetchData />)
 
 </script>
 </html>

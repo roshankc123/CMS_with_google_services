@@ -23,7 +23,7 @@ def fetch_playlist(playlistId, nextPageToken = ''):
             'url': 'https://www.youtube.com/watch?v=' + snippet['resourceId']['videoId'] + '&list=' + snippet['playlistId'],
             'player': 'http://www.youtube.com/embed/' + snippet['resourceId']['videoId'],
             })
-    array.append({'nextToken': '/' + response['nextPageToken'] if 'nextPageToken' in response else ''})
+    array.append({'nextToken': ('/' + response['nextPageToken'] if 'nextPageToken' in response else '')})
     return array
 
 # print(fetch_playlist("PLbpi6ZahtOH6G_A4_RLzzqdVf4TG5ilzf"))
