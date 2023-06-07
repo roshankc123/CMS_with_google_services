@@ -18,20 +18,26 @@
     const container = document.getElementById('content');
     const root = ReactDOM.createRoot(container);
     var nextToken = '';
+    var btn = document.getElementById('btn');
 
     function FetchData(){
         const [data, setdata] = React.useState([]);
         React.useEffect(() => {
             fetch('/youtube_data/list' + nextToken)
                 .then(
-                        response => response.json()
+                    
+                            response => {
+                                let abc = response.json()
+                                btn.innerHTML = 'loading'
+                                return abc
+                            },
                     )
                     .then(
                         responseData => {
+                            btn.innerHTML = 'load more'
                             let tempNext = responseData.pop()
                             nextToken = tempNext['nextToken']
                             if(nextToken == ''){
-                                let btn = document.getElementById('btn');
                                 btn.disabled = 'disabled';
                                 btn.innerHTML = 'no more video';
                             }
