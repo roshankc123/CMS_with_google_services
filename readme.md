@@ -1,6 +1,8 @@
 # google-service-api
 
-you will need service account credentials as a json file and a folder id to store all data, 
+This repository contains the example code for google servces api of google forms, google sheets, google drive and youtube using a google service api with service account. service account allows us to access google api with no repetative oauth verification. it is best for backend which needs to use google api.
+
+you will need service account credentials as a json file and a folder id to store all data,
 
 first create a service account of your google account
 
@@ -25,21 +27,9 @@ make neccessary folders in drive
 3. get a folder id, click on copy folder-sharing link, there you can find a folder id
 4. implement a folder id in code
 
-find out more on:
+read the official project documents at;
 
-1. https://docs.google.com/document/d/1An5IxVYPGuZ3EnQVkvWWrwB_2N1DP-ZkxBRla-6vS9k/edit?usp=sharing
-2. https://docs.google.com/document/d/15kduoQwEFnPjY2m9nJ5oX9FrJniCWXIdCeYNNzaVBFw/edit?usp=sharing
-
-Directory structure:
-    –/mysite/
-    —-/templates/
-    —-—-/.html files
-    —-/app.py    - main server entry point
-    —-/consts.py   - contain constant variables such as base form id(base form id look below)
-    —-/helpers.py  - backbone of the system, contain all custom made modules needed
-    —-/auth.py   - contain code related to authentication and authorization
-    —-/credentials.json   -  contain google service account credentials
-    —-/committee.json  - has form id of all committee registered so that one can get data of all committee as per requirement
-    —-/sessions  -  only one user can login at a time
+1. <https://docs.google.com/document/d/1An5IxVYPGuZ3EnQVkvWWrwB_2N1DP-ZkxBRla-6vS9k/edit?usp=sharing>
+2. <https://docs.google.com/document/d/15kduoQwEFnPjY2m9nJ5oX9FrJniCWXIdCeYNNzaVBFw/edit?usp=sharing>
 
 Base form id: in order to make a form replication possible a base form is needed from which a copy is made , this form is there for yearly recurring events like robo-rookies, committee form, member intake.

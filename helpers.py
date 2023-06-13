@@ -110,27 +110,116 @@ def convert_link_to_public_thumbnail(link):
     return 'https://drive.google.com/thumbnail?id=' + link.split('=')[1]  #use thumbnails, small size and load faster
 
 
-#extract answers from text response, (:dict, :list)
+#extract answers from text response in forms, (:dict, :list)
 def get_text_answers(textAnswer):
+
     result = []
+
     for temp in textAnswer['textAnswers']['answers']:
         # print(temp['value'])
         result.append(temp['value'])
+
     return result
         
 
 #to create beautifully decorated json , (formType:enum, :list)
+# define the fields of data expected in a specified order
+
 def formMapper(formType = 'committee'):
+
     # formtype = commitee, achievement, event
     if formType == 'committee':
         return ['position','name','fb','insta', 'twitter', 'linkedin', 'image']
+    
     elif formType == 'achievements':
         return ['id', 'timestamp','title','image','desc','date', 'fb', 'youtube', 'medium', 'insta']
+    
     elif formType == 'events':
         return ['title','formLink', 'image','desc','date', 'type', 'fb', 'youtube', 'medium', 'insta', 'status']
 
+
+# extract id of each question to create a accurate mapping, (:str, :list)
+def get_form_question_id(formId):
+
+    items = get_form_detail(formId)['items']
+
+    result = []
+
+    for temp in items:
+        result.append(temp['questionItem']['question']['questionId'])
+
+    return result
+
+
 # extarct from data, ((formId:str, formType:enum), :dict)
 # simply form name as a formType , only committee,achievements and events are defined for now 
+def retrieve_form_data(formId, formType='committee'):
+
+    service = get_service(api_name='forms',api_version='v1',)
+
+    formData = service.forms().responses().list(formId=formId).execute()
+
+    #check if there is any data or not, if not return empty dict
+    if not formData.get('responses'):
+        return {}
+    
+    questionId = get_form_question_id(formId)
+
+    result = {}
+
+    responseMapper = formMapper(formType)
+
+    for temp in formData['responses']:
+        # print(temp)
+        indivisual = {}
+        i = 0
+
+        for id in questionId:
+            
+            if dict.get(temp['answers'],id):  #skip if no answer id found, so response with no data will not have key
+                # print(temp['answers'][id])
+                if temp['answers'][id].get('textAnswers'):
+                    indivisual[responseMapper[i]] = get_text_answers(temp['answers'][id])
+
+                elif temp['answers'][id].get('fileUploadAnswers'):
+                    indivisual[responseMapper[i]] = convert_link_to_public_thumbnail(temp['answers'][id])
+
+            i += 1
+
+            result[formType].append(indivisual)
+
+    return result
+
+def _path():
+    return path()
+
+
+
+# retrieve sheet data by sheet id
+def retrieve_sheets_data(sheetId, formType = 'committee'):
+
+    service = get_service(api_name='sheets',api_version='v4',)
+
+    ranges = 'r2c1:r100c15'  #specify the fields range
+
+    response = service.spreadsheets().values().batchGet(
+            spreadsheetId=sheetId, ranges=ranges, majorDimension='ROWS').execute()
+
+    result = {}
+
+    for temp in response['valueRanges']:
+        if 'values' not in temp:
+            return {}
+
+        result['data'].append(temp)
+    return result
+
+
+# ###############
+#  below code is the live use case of a project
+# #############
+
+
 def retrieve_form_data(formId, formType='committee'):  
     service = get_service(api_name='forms',api_version='v1',)
     formData = service.forms().responses().list(formId=formId).execute()
@@ -142,6 +231,7 @@ def retrieve_form_data(formId, formType='committee'):
     questionId = get_form_question_id(formId)
     result = {}
     responseMapper = formMapper(formType)      #to beautify the json
+    
     for temp in formData['responses']:
         # print(temp)
         indivisual = {}
@@ -170,38 +260,3 @@ def retrieve_form_data(formId, formType='committee'):
             else:
                 result['events'] = [indivisual]
     return result
-
-
-# extract id of each question to create a accurate mapping, (:str, :list)
-def get_form_question_id(formId):
-    items = get_form_detail(formId)['items']
-    result = []
-    for temp in items:
-        result.append(temp['questionItem']['question']['questionId'])
-    return result
-
-
-def _path():
-    return path()
-
-
-
-# retrieve sheet data by sheet id
-def retrieve_sheets_data(sheetId, formType = 'committee'):
-    service = get_service(api_name='sheets',api_version='v4',)
-    if formType == 'committee':
-        tempResult = {}
-        ranges = 'r2c1:r100c15'  #specify the fields range
-    response = service.spreadsheets().values().batchGet(
-            spreadsheetId=sheetId, ranges=ranges, majorDimension='ROWS').execute()
-
-    
-    result = {}
-
-    for temp in response['valueRanges']:
-        if 'values' not in temp:
-            return {}
-
-    result['data'] = temp
-    return result
-
